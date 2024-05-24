@@ -153,4 +153,48 @@ In the `setup()`, the Arduino configures serial communication, initializes the I
 3. **Bluetooth Connection**: Establish a Bluetooth connection between the Arduino and a MIDI device.
 4. **Musical Control**: Use hand movements and touches on the sensors to control MIDI devices.
 
+## Juce
 
+This audio plugin, implemented with the JUCE framework, connects to an OSC (Open Sound Control) server to receive messages that control the plugin's parameters. The audio processor applies three band-pass filters to copies of the original audio buffer, combining the results based on the values of the received MIDI messages.
+
+### `CMLSJuceAudioProcessor` Class Constructor
+
+The constructor:
+
+- Initializes the audio processor with stereo input and output channels.
+- Attempts to connect to port 9000 to receive OSC messages.
+- Adds listeners for two specific OSC addresses: "/handMovement/x" and "/handMovement/y".
+
+### Preparing for Playback
+
+The `prepareToPlay` method:
+
+- Configures the processor for playback, initializing the filters and creating temporary audio buffers for three bands.
+
+### Audio Block Processing
+
+The `processBlock` method:
+
+- Normalizes the input channels.
+- Creates copies of the original audio buffer.
+- Applies a band-pass filter to each buffer copy with different cutoff frequencies.
+- Calculates the cutoff frequencies based on received OSC messages.
+- Combines the filtered copies and returns them to the original buffer, with weighting based on the received MIDI messages.
+
+### Plugin Parameter Configuration
+
+The `createLayout` method:
+
+- Creates the plugin's parameter layout using `AudioProcessorValueTreeState`.
+
+### Receiving OSC Messages
+
+The `oscMessageReceived` method:
+
+- Receives OSC messages and updates the corresponding MIDI values.
+
+### Frequency Calculation
+
+The `calcFreqs` method:
+
+- Calculates the cutoff frequencies for the three band-pass filters (`freq1`, `freq2`, `freq3`) based on the MIDI values received through OSC messages.
