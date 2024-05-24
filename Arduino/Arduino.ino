@@ -21,13 +21,13 @@ bool curr = 0;
 // thresholds for the 3 buttons
 int thresh1 = 45;
 int thresh2 = 36;
-int thresh3 = 12;
+int thresh3 = 23;
 
 //thresholds for the trigger
 uint8_t t_tresh = 55;
 
 // octave value
-uint8_t octave = 2;
+uint8_t octave = 60;
 uint32_t long_octave = 0;
 uint32_t idx = 0;
 
@@ -138,21 +138,21 @@ void setOctave(uint8_t arg) {                                                   
 void sendNote(uint8_t arg) {                                                          // behaviour of the trigger button when pressed
   Serial.printf("in sendNote\n");             
   getMidiNote();                                                                      // evaluates the current midi note and sends a noteOn
-  BLEMidiServer.noteOn(1,midi_note[curr_n], 127);
+  BLEMidiServer.noteOn(0,midi_note[curr_n], 127);
 }
 
 void checkNote(uint8_t arg) {                                                         // behaviour of the trigger button when is continued to be pressed
   //Serial.printf("in CheckNote\n");
   getMidiNote();                                                                      // evaluates the current note
   if(midi_note[curr_n] != midi_note[!curr_n]){                                        // if different from previous one send noteOf of the previous one and noteOn of current one
-    BLEMidiServer.noteOff(1, midi_note[!curr_n], 127);
-    BLEMidiServer.noteOn(1, midi_note[curr_n], 127);
+    BLEMidiServer.noteOff(0, midi_note[!curr_n], 127);
+    BLEMidiServer.noteOn(0, midi_note[curr_n], 127);
   }
 }
 
 void stopNote(uint8_t arg) {                                                          // behaviour of trigger button when released
   Serial.printf("in StopNote\n");
-  BLEMidiServer.noteOff(1, midi_note[curr_n], 127);                                   // sends noteOff of current note
+  BLEMidiServer.noteOff(0, midi_note[curr_n], 127);                                   // sends noteOff of current note
 }
 
 
@@ -202,9 +202,9 @@ void loop() {
   //touchButton(&strip, T_BUTS, thresh1, evaluate, empty, setOctave);                //sets the 2 touch inputs as buttons
   touchButton(&touch, TOUCH, t_tresh, sendNote, checkNote, stopNote);
   if(midi_cc[curr*2] != midi_cc[!curr*2])                                             // sends midi CC for pitch
-    BLEMidiServer.controlChange(1, 12, midi_cc[curr*2]);
+    BLEMidiServer.controlChange(0, 12, midi_cc[curr*2]);
   if(midi_cc[curr*2 + 1] != midi_cc[!curr*2 + 1])                                     // sends midi CC for roll
-    BLEMidiServer.controlChange(1, 13, midi_cc[curr*2 + 1]);
+    BLEMidiServer.controlChange(0, 13, midi_cc[curr*2 + 1]);
   curr = !curr;
   delay(10);
 }
