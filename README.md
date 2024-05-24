@@ -97,3 +97,60 @@ This SuperCollider script sets up a sophisticated audio processing environment t
 ### Summary
 
 This script demonstrates a complex setup where MIDI and OSC protocols are used to control various aspects of audio synthesis and processing in real-time. It integrates multiple waveforms, uses VST plugins for effects, and allows dynamic control through both MIDI and OSC messages. This setup is particularly useful for interactive audio applications, live performances, and experimental sound design.
+
+## Arduino
+
+This project allows you to control MIDI musical devices using an Arduino microcontroller and an IMU (Inertial Measurement Unit) sensor. By using hand movements and touches on tactile sensors, you can send MIDI commands via Bluetooth to create music.
+
+## Components Used
+
+- **Arduino**: The microcontroller that manages the entire system.
+- **MPU6050**: A sensor that measures acceleration and rotation, used to detect hand movements.
+- **Tactile sensors**: Used as buttons to change the MIDI note octave.
+- **Flex sensor**: Measures finger bending to determine which note to play.
+- **BLE Midi**: A library that allows sending MIDI commands via Bluetooth.
+
+## How It Works
+
+### Pin Configuration
+
+- **T_BUTS** (pin 15): Tactile sensor to change the octave.
+- **TOUCH** (pin 33): Tactile sensor to send MIDI notes.
+- **FLEX** (pin 13): Flex sensor to determine the MIDI note.
+
+### Main Variables
+
+- **acel** and **gyro**: Store acceleration and rotation data from the IMU.
+- **midi_cc** and **midi_note**: Store the values of MIDI control commands and notes to be sent.
+- **octave**: Controls the current octave of the MIDI notes.
+
+### Key Functions
+
+#### Collecting Data from the IMU Sensor
+
+The `getInertialData()` function reads acceleration and rotation data from the IMU and calculates the time elapsed since the last reading. This is essential for accurately determining hand movements.
+
+#### Calculating Angles
+
+`getAccAngles()` uses the acceleration data to calculate the hand's pitch and roll angles. These angles are then converted into MIDI values.
+
+#### MIDI Control
+
+`getMidiCc()` calculates the MIDI CC values based on the calculated angles and sends them via Bluetooth. `getMidiNote()` reads the value from the flex sensor, converts it into a MIDI note, and sends it.
+
+#### Handling Tactile Buttons
+
+The `touchButton()` function manages the behavior of the tactile buttons. When touched, a button can change the octave or send MIDI notes. The `sendNote`, `checkNote`, and `stopNote` functions send appropriate MIDI messages when a button is pressed, held down, or released.
+
+### Setup and Main Loop
+
+In the `setup()`, the Arduino configures serial communication, initializes the IMU sensor, and starts the Bluetooth MIDI server. In the `loop()`, the code continuously reads sensor data, calculates MIDI values, and sends them via Bluetooth.
+
+## Usage
+
+1. **Assemble the Circuit**: Connect the sensors and IMU to the specified pins.
+2. **Upload the Code**: Upload this code to the Arduino.
+3. **Bluetooth Connection**: Establish a Bluetooth connection between the Arduino and a MIDI device.
+4. **Musical Control**: Use hand movements and touches on the sensors to control MIDI devices.
+
+
