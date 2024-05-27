@@ -199,7 +199,7 @@ void CMLSJuceAudioProcessor::processBlock(juce::AudioBuffer<float>& buffer, juce
     for(int i = 0; i < totalNumOutputChannels; i++){                        // summing the 3 copies back in the original buffer and applying the correct magnitud rescaling
         auto writer = buffer.getWritePointer(i);
         for (int j = 0; j < buffer.getNumSamples(); j++)
-            writer[j] = (mags[i]/3)*((1+(midi[0]/127.f)*0.2)1.5*block1.getSample(i,j) + 1.25*block2.getSample(i,j) + 1.1*block3.getSample(i,j));
+            writer[j] = (mags[i]/3)*((1+(midi[0]/127.f)*0.2)*1.5*block1.getSample(i,j) + 1.25*block2.getSample(i,j) + 1.1*block3.getSample(i,j));
     }
 }
 
